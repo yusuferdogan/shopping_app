@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_list_app/pages/add_item_page.dart';
+import 'package:shopping_list_app/pages/error_page.dart';
 import 'package:shopping_list_app/pages/home_page.dart';
 import 'package:shopping_list_app/pages/welcome_page.dart';
 
@@ -29,7 +30,9 @@ class _AppCubitLogicsState extends State<AppCubitLogics> {
           } else if (state is LoadedState) {
             return HomePage();
           } else if (state is AddItemState) {
-            return AddItemPage();
+            return const AddItemPage();
+          } else if (state is ErrorState) {
+            return const ErrorPage();
           } else {
             return Container();
           }

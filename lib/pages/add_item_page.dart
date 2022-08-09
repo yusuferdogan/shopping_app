@@ -9,13 +9,26 @@ class AddItemPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _categoryController;
-    TextEditingController _nameController;
+    TextEditingController? categoryController;
+    TextEditingController? nameController;
 
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.save_sharp),
-          onPressed: () async {},
+          onPressed: () async {
+            if (nameController!.text == '') {
+              //TODO; ERROR
+            }
+
+            Item item = Item(
+                name: nameController!.text,
+                category: categoryController!.text == ''
+                    ? 'Uncategorized'
+                    : categoryController!.text,
+                isDone: false);
+
+            BlocProvider.of<AppCubits>(context).addItem(item);
+          },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(
@@ -45,66 +58,75 @@ class AddItemPage extends StatelessWidget {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Autocomplete<String>(
-                          optionsBuilder: (textEditingValue) {
-                            if (textEditingValue.text == '') {
-                              return const Iterable<String>.empty();
-                            }
-                            var seen = <String>{};
-                            items
-                                .where((element) => seen.add(element.category))
-                                .toList();
-                            return seen
-                                .where((element) => element
-                                    .toLowerCase()
-                                    .startsWith(
-                                        textEditingValue.text.toLowerCase()))
-                                .toList();
-                          },
-                          fieldViewBuilder: (context, textEditingController,
-                              focusNode, onFieldSubmitted) {
-                            _categoryController = textEditingController;
-                            return TextField(
-                                controller: textEditingController,
-                                focusNode: focusNode,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(25)),
-                                  labelText: 'Category',
-                                ));
-                          },
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Autocomplete<String>(
+                            optionsBuilder: (textEditingValue) {
+                              if (textEditingValue.text == '') {
+                                return const Iterable<String>.empty();
+                              }
+                              var seen = <String>{};
+                              items
+                                  .where(
+                                      (element) => seen.add(element.category))
+                                  .toList();
+                              return seen
+                                  .where((element) => element
+                                      .toLowerCase()
+                                      .startsWith(
+                                          textEditingValue.text.toLowerCase()))
+                                  .toList();
+                            },
+                            fieldViewBuilder: (context, textEditingController,
+                                focusNode, onFieldSubmitted) {
+                              categoryController = textEditingController;
+                              return TextField(
+                                  controller: textEditingController,
+                                  focusNode: focusNode,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(25)),
+                                    labelText: 'Category',
+                                  ));
+                            },
+                          ),
                         ),
                         const SizedBox(
                           height: 10,
                         ),
-                        Autocomplete<String>(
-                          optionsBuilder: (textEditingValue) {
-                            if (textEditingValue.text == '') {
-                              return const Iterable<String>.empty();
-                            }
-                            var seen = <String>{};
-                            items
-                                .where((element) => seen.add(element.name))
-                                .toList();
-                            return seen
-                                .where((element) => element
-                                    .toLowerCase()
-                                    .startsWith(
-                                        textEditingValue.text.toLowerCase()))
-                                .toList();
-                          },
-                          fieldViewBuilder: (context, textEditingController,
-                              focusNode, onFieldSubmitted) {
-                            _nameController = textEditingController;
-                            return TextField(
-                                controller: textEditingController,
-                                focusNode: focusNode,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(25)),
-                                  labelText: 'Category',
-                                ));
-                          },
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Autocomplete<String>(
+                            optionsBuilder: (textEditingValue) {
+                              if (textEditingValue.text == '') {
+                                return const Iterable<String>.empty();
+                              }
+                              var seen = <String>{};
+                              items
+                                  .where((element) => seen.add(element.name))
+                                  .toList();
+                              return seen
+                                  .where((element) => element
+                                      .toLowerCase()
+                                      .startsWith(
+                                          textEditingValue.text.toLowerCase()))
+                                  .toList();
+                            },
+                            fieldViewBuilder: (context, textEditingController,
+                                focusNode, onFieldSubmitted) {
+                              nameController = textEditingController;
+                              return TextField(
+                                  controller: textEditingController,
+                                  focusNode: focusNode,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(25)),
+                                    labelText: 'Name',
+                                  ));
+                            },
+                          ),
                         ),
                       ],
                     )

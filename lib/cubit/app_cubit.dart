@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopping_list_app/cubit/app_cubit_states.dart';
 import 'package:shopping_list_app/models/item.dart';
+import 'package:shopping_list_app/services/api_helper.dart';
 import 'package:shopping_list_app/services/client.dart';
 
 class AppCubits extends Cubit<CubitStates> {
@@ -14,8 +15,13 @@ class AppCubits extends Cubit<CubitStates> {
   ///Gets data from server and trig the loaded state
   getData() async {
     emit(LoadingState());
-    items = await client.getItems();
-    emit(LoadedState(items: items));
+    bool connection = await checkInternetConnection();
+    if (connection) {
+      items = await client.getItems();
+      emit(LoadedState(items: items));
+    } else {
+      emit(ErrorState());
+    }
   }
 
   ///Just trig the loaded state with an existing item list
